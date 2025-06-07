@@ -830,10 +830,13 @@ validate_thumbnail_path (char                      *path,
 
   pixbuf = gdk_pixbuf_new_from_file (path, NULL);
   if (pixbuf == NULL ||
-      !gnome_desktop_thumbnail_is_valid (pixbuf, uri, mtime)) {
+      !gnome_desktop_thumbnail_is_valid (pixbuf, uri, mtime))
+	{
+	  g_clear_object (&pixbuf);
       g_free (path);
+
       return NULL;
-  }
+    }
 
   g_clear_object (&pixbuf);
 
