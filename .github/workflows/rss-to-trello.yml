@@ -1,0 +1,11 @@
+name: Trello RSS to GitHub
+
+on:
+  workflow_dispatch:  # enables manual trigger from GitHub UI
+
+jobs:
+  post-to-trello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Example Step
+        run: echo "Hello from GitHub Actions!"
