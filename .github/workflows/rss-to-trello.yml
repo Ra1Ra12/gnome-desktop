@@ -1,11 +1,31 @@
 name: Trello RSS to GitHub
 
 on:
-  workflow_dispatch:  # This allows you to trigger it manually
+  workflow_dispatch:
 
 jobs:
   post-to-trello:
     runs-on: ubuntu-latest
     steps:
-      - name: Example Step
-        run: echo "Hello from GitHub Actions!"
+      - name: Fetch RSS and Post to Trello
+        env:
+          TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+          TRELLO_API_TOKEN: ${{ secrets.TRELLO_API_TOKEN }}
+        run: |
+          RSS_FEED="https://your-render-url.onrender.com/rss"  # ← Replace this with your actual Render RSS feed URL
+          LIST_ID="68726afdd30877f7ffd8120" # Your "New Job Post" list ID
+
+          echo "Fetching feed from $RSS_FEED..."
+
+          curl -s $RSS_FEED | grep -E '<title>|<link>' | paste - - | while IFS=$'\t' read -r title link; do
+            CLEAN_TITLE=$(echo "$title" | sed 's/<[^>]*>//g')
+            CLEAN_LINK=$(echo "$link" | sed 's/<[^>]*>//g')
+            
+            echo "Posting to Trello: $CLEAN_TITLE"
+            curl -s -X POST "https://api.trello.com/1/cards" \
+              -d "key=$TRELLO_API_KEY" \
+              -d "token=$TRELLO_API_TOKEN" \
+              -d "idList=$LIST_ID" \
+              -d "name=$CLEAN_TITLE" \
+              -d "desc=$CLEAN_LINK"
+          done
