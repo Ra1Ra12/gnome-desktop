@@ -1,7 +1,7 @@
 name: Trello RSS to GitHub
 
 on:
-  workflow_dispatch:  # enables manual trigger from GitHub UI
+  workflow_dispatch:  # This allows you to trigger it manually
 
 jobs:
   post-to-trello:
